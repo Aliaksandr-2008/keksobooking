@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Сергей Кузьмин](https://up.htmlacademy.ru/javascript/8/user/49508).
-* Наставник: `Неизвестно`.
+* Наставник: [Игорь Алексеенко](https://up.htmlacademy.ru/javascript/8/user/100868).
 
 ---
 
