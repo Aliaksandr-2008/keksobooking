@@ -2,11 +2,15 @@
 
 (function () {
   var pinMap = document.querySelector('.tokyo__pin-map');
+  var activePin;
+  var dialog = document.querySelector('.dialog');
 
+  // Деактивирует активный элемент
   var deactivatePin = function () {
-    var activePin = pinMap.querySelector('.pin--active');
+    activePin = pinMap.querySelector('.pin--active');
     if (activePin) {
       activePin.classList.remove('pin--active');
+      dialog.classList.remove('dialog--active');
     }
   };
 
@@ -14,18 +18,18 @@
     evt.preventDefault();
 
     var target = evt.target;
-    var dialog = document.querySelector('.dialog');
 
     deactivatePin();
 
     while (target !== pinMap) {
-      if (target.classList.contains('pin')) {
+      if (target.classList.contains('pin') && target !== activePin) {
         target.classList.add('pin--active');
         dialog.classList.add('dialog--active');
       }
       target = target.parentNode;
     }
 
+    // Обработчик событий окна
     var dialogHanler = function (e) {
       e.preventDefault();
 
@@ -34,11 +38,11 @@
       while (trgt !== dialog) {
         if (trgt.classList.contains('dialog__close')) {
           dialog.classList.remove('dialog--active');
+          dialog.removeEventListener('click', dialogHanler);
           deactivatePin();
         }
         trgt = trgt.parentNode;
       }
-      dialog.removeEventListener('click', dialogHanler);
     };
 
     dialog.addEventListener('click', dialogHanler);
@@ -49,46 +53,50 @@
   var noticePrice = noticeForm.querySelector('#price');
   var noticeAddress = noticeForm.querySelector('#address');
 
+  // Установка требований к данным, вводимым в поля формы
   noticeTitle.required = true;
   noticeTitle.minLength = 30;
   noticeTitle.maxLength = 100;
-
   noticePrice.required = true;
   noticePrice.min = 1000;
   noticePrice.max = 1000000;
-
   noticeAddress.required = true;
 
   var roomNumber = noticeForm.querySelector('#room_number');
   var guestsLimit = noticeForm.querySelector('#capacity');
 
+  // Устанавливает минимальную цену в зависимости от выбранного типа жилья
   var setMinPrice = function (type) {
     switch (type) {
-      case 'Квартира': {
+      case 'Квартира':
         noticePrice.min = 1000;
         break;
-      }
-      case 'Лачуга': {
+      case 'Лачуга':
         noticePrice.min = 0;
         break;
-      }
-      case 'Дворец': {
+      case 'Дворец':
         noticePrice.min = 10000;
         break;
-      }
     }
   };
 
-  var setGuestsMax = function (rooms) {
+  // Устанавливает максимальное количество гостей в засисимости от выбранного количества комнат
+  var setMaxGuests = function (rooms) {
     switch (rooms) {
-      case '1': {
+      case '1':
         guestsLimit.selectedIndex = 1;
         break;
-      }
-      case '2' || '100': {
+      case '2':
+      case '100':
         guestsLimit.selectedIndex = 0;
         break;
-      }
+    }
+  };
+
+  // Устанавливает минимальное количество комнат в засисимости от выбранного количества гостей
+  var setMinRooms = function (guests) {
+    if (parseInt(guests, 10) > 1) {
+      roomNumber.selectedIndex = 1;
     }
   };
 
@@ -98,24 +106,23 @@
     var checkOutTime = noticeForm.querySelector('#timeout');
 
     switch (evt.target) {
-      case checkInTime: {
+      case checkInTime:
         checkOutTime.selectedIndex = checkInTime.selectedIndex;
         break;
-      }
-      case checkOutTime: {
+      case checkOutTime:
         checkInTime.selectedIndex = checkOutTime.selectedIndex;
         break;
-      }
-      case lodgingType: {
+      case lodgingType:
         setMinPrice(lodgingType.value);
         break;
-      }
-      case roomNumber: {
-        setGuestsMax(roomNumber.value);
+      case roomNumber:
+        setMaxGuests(roomNumber.value);
         break;
-      }
+      case guestsLimit:
+        setMinRooms(guestsLimit.value);
+        break;
     }
   }, true);
 
-  setGuestsMax(roomNumber.value);
+  setMaxGuests(roomNumber.value);
 })();
