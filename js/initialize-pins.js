@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var LOAD_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
+
   var keyCodeList = {
     ENTER: 13,
     ESC: 27
@@ -12,8 +14,8 @@
 
   // Активирует элемент на карте, по-которому был клик или нажатие клавиши "Enter"
   /**
-    * @param {HTMLDivElement} target
-    */
+   * @param {HTMLDivElement} target
+   */
   var activatePin = function (target) {
     if (target.classList.contains('pin') && target !== activePin) {
       target.classList.add('pin--active');
@@ -32,9 +34,9 @@
 
   // Условие клика или нажатия клавиши "Enter" на элементе
   /**
-    * @param {KeyboardEvent|MouseEvent} evt
-    * @return {boolean}
-    */
+   * @param {KeyboardEvent|MouseEvent} evt
+   * @return {boolean}
+   */
   var enterCondition = function (evt) {
     return evt.type === 'click' || evt.keyCode === keyCodeList.ENTER;
   };
@@ -50,8 +52,8 @@
 
   // Обработчик кнокпи закрытия окна диалога
   /**
-    * @param {KeyboardEvent|MouseEvent} evt
-    */
+   * @param {KeyboardEvent|MouseEvent} evt
+   */
   var dialogCloseHandler = function (evt) {
     if (enterCondition(evt)) {
       evt.preventDefault();
@@ -61,8 +63,8 @@
 
   // Обработчик клавиши "ESC"
   /**
-    * @param {KeyboardEvent|MouseEvent} evt
-    */
+   * @param {KeyboardEvent|MouseEvent} evt
+   */
   var escBtnHandler = function (evt) {
     if (evt.keyCode === keyCodeList.ESC) {
       dialogClose(evt);
@@ -71,8 +73,8 @@
 
   // Установщик обработчиков при открытом окне диалога
   /**
-    * @param {boolean} condition
-    */
+   * @param {boolean} condition
+   */
   var setDialogHandlers = function (condition) {
     if (condition) {
       dialogCloseBtn.addEventListener('click', dialogCloseHandler);
@@ -85,8 +87,8 @@
 
   // Обработчик событий на карте
   /**
-    * @param {KeyboardEvent|MouseEvent} evt
-    */
+   * @param {KeyboardEvent|MouseEvent} evt
+   */
   var pinMapHadler = function (evt) {
     if (enterCondition(evt)) {
       evt.preventDefault();
@@ -108,6 +110,19 @@
       }
     }
   };
+
+  var pins = document.querySelectorAll('.pin');
+  for (var i = 0; i < pins.length; i++) {
+    if (!pins[i].classList.contains('pin__main')) {
+      pins[i].remove();
+    }
+  }
+
+  window.load(LOAD_URL, function (data) {
+    var similarApartments = JSON.parse(data);
+    var filteredApartments = similarApartments.slice(0, 3);
+    console.log(filteredApartments);
+  });
 
   pinMap.addEventListener('click', pinMapHadler);
   pinMap.addEventListener('keydown', pinMapHadler);
