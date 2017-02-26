@@ -34,6 +34,22 @@
   var roomNumber = noticeForm.querySelector('#room_number');
   var guestsLimit = noticeForm.querySelector('#capacity');
 
+  /**
+   * @param {HTMLSelectElement} element
+   * @param {string} value
+   */
+  var syncValues = function (element, value) {
+    element.value = value;
+  };
+
+  /**
+   * @param {HTMLInputElement} element
+   * @param {string} value
+   */
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
+  };
+
   noticeForm.addEventListener('change', function (evt) {
     var lodgingType = noticeForm.querySelector('#type');
     var checkInTime = noticeForm.querySelector('#time');
@@ -42,28 +58,29 @@
     switch (evt.target) {
       case checkInTime:
         // Устанавливает время выезда в зависимости от выбранного время заезда
-        window.synchronizeFields(checkInTime, checkOutTime, CHECK_IN_TIME_VALUES, CHECK_OUT_TIME_VALUES, 'value');
+        window.synchronizeFields(checkInTime, checkOutTime, CHECK_IN_TIME_VALUES, CHECK_OUT_TIME_VALUES, syncValues);
         break;
       case checkOutTime:
         // Устанавливает время заезда в зависимости от выбранного время выезда
-        window.synchronizeFields(checkOutTime, checkInTime, CHECK_OUT_TIME_VALUES, CHECK_IN_TIME_VALUES, 'value');
+        window.synchronizeFields(checkOutTime, checkInTime, CHECK_OUT_TIME_VALUES, CHECK_IN_TIME_VALUES, syncValues);
         break;
       case lodgingType:
         // Устанавливает минимальную цену в зависимости от выбранного типа жилья
-        window.synchronizeFields(lodgingType, noticePrice, LODGING_TYPE_VALUES, LODGING_TYPE_MIN_PRICES, 'min');
+        window.synchronizeFields(lodgingType, noticePrice, LODGING_TYPE_VALUES, LODGING_TYPE_MIN_PRICES, syncValueWithMin);
         break;
       case roomNumber:
         // Устанавливает максимальное количество гостей в засисимости от выбранного количества комнат
-        window.synchronizeFields(roomNumber, guestsLimit, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
+        window.synchronizeFields(roomNumber, guestsLimit, ROOMS_QUANTITY, GUESTS_QUANTITY, syncValues);
         break;
       case guestsLimit:
         // Устанавливает минимальное количество комнат в засисимости от выбранного количества гостей
         if (guestsLimit.value > 0) {
-          window.synchronizeFields(guestsLimit, roomNumber, GUESTS_QUANTITY, ROOMS_QUANTITY, 'value');
+          window.synchronizeFields(guestsLimit, roomNumber, GUESTS_QUANTITY, ROOMS_QUANTITY, syncValues);
         }
         break;
     }
   }, true);
+
   // Устанавливает максимальное количество гостей при загрузке страницы
-  window.synchronizeFields(roomNumber, guestsLimit, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
+  window.synchronizeFields(roomNumber, guestsLimit, ROOMS_QUANTITY, GUESTS_QUANTITY, syncValues);
 })();
