@@ -13,7 +13,7 @@ window.load = (function () {
       try {
         onLoad(evt.target.response);
       } catch (err) {
-        throw new Error('Fatal error: Invalid data received');
+        // throw new Error('Fatal error: Invalid data received');
       }
     });
 

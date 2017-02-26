@@ -8,9 +8,31 @@
     ESC: 27
   };
 
+  var PIN_SIZE = {
+    WIDTH: 56,
+    HEIGHT: 75
+  };
+
   var pinMap = document.querySelector('.tokyo__pin-map');
   var activePin = null;
   var dialogCloseBtn = document.querySelector('.dialog__close');
+
+  var templateElement = document.getElementById('pin-template');
+  var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
+
+  var renderPins = function (item, index) {
+    pinMap.appendChild(function () {
+      var newPin = templateContainer.querySelector('.pin').cloneNode(true);
+      var img = new Image(40, 40);
+      img.src = item.author.avatar;
+
+      newPin.style.left = item.location.x - PIN_SIZE.WIDTH / 2 + 'px';
+      newPin.style.top = item.location.y - PIN_SIZE.HEIGHT + 'px';
+      newPin.setAttribute('data-index', String(index));
+      newPin.appendChild(img);
+      return newPin;
+    });
+  };
 
   // Активирует элемент на карте, по-которому был клик или нажатие клавиши "Enter"
   /**
@@ -121,7 +143,8 @@
   window.load(LOAD_URL, function (data) {
     var similarApartments = JSON.parse(data);
     var filteredApartments = similarApartments.slice(0, 3);
-    console.log(filteredApartments);
+
+    filteredApartments.foreach(renderPins());
   });
 
   pinMap.addEventListener('click', pinMapHadler);
