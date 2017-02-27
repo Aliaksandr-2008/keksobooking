@@ -1,17 +1,24 @@
 'use strict';
 
 (function () {
-  var LOAD_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
+  var PIN_LOAD_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
 
   var keyCodeList = {
     ENTER: 13,
     ESC: 27
   };
 
+  var PICTURE_SIZE = {
+    WIDTH: 40,
+    HEIGHT: 40
+  };
+
   var PIN_SIZE = {
     WIDTH: 56,
     HEIGHT: 75
   };
+
+  var IMAGE_LOAD_TIMEOUT = 10000;
 
   var pinMap = document.querySelector('.tokyo__pin-map');
   var activePin = null;
@@ -20,17 +27,38 @@
   var templateElement = document.getElementById('pin-template');
   var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
 
-  var renderPins = function (item, index) {
-    pinMap.appendChild(function () {
-      var newPin = templateContainer.querySelector('.pin').cloneNode(true);
-      var img = new Image(40, 40);
-      img.src = item.author.avatar;
+  var getPinElement = function (item, index) {
+    var pinElement = templateContainer.querySelector('.pin').cloneNode(true);
+    var img = pinElement.querySelector('img');
+    var picture = new Image(PICTURE_SIZE.WIDTH, PICTURE_SIZE.HEIGHT);
+    var imgLoadTimeout = null;
 
-      newPin.style.left = item.location.x - PIN_SIZE.WIDTH / 2 + 'px';
-      newPin.style.top = item.location.y - PIN_SIZE.HEIGHT + 'px';
-      newPin.setAttribute('data-index', String(index));
-      newPin.appendChild(img);
-      return newPin;
+    picture.onload = function (evt) {
+      clearTimeout(imgLoadTimeout);
+      img.src = evt.target.src;
+    };
+
+    picture.src = item.author.avatar;
+
+    imgLoadTimeout = setTimeout(function () {
+      img.src = '';
+    }, IMAGE_LOAD_TIMEOUT);
+
+    pinElement.style.left = parseInt(item.location.x, 10) - PIN_SIZE.WIDTH / 2 + 'px';
+    pinElement.style.top = parseInt(item.location.y, 10) - PIN_SIZE.HEIGHT + 'px';
+    pinElement.setAttribute('data-index', index.toString());
+
+    return pinElement;
+  };
+
+  var Pin = function (data, index) {
+    this.data = data;
+    this.element = getPinElement(this.data, index);
+  };
+
+  var renderPins = function (obj) {
+    obj.forEach(function (item, index) {
+      pinMap.appendChild(new Pin(item, index).element);
     });
   };
 
@@ -140,11 +168,11 @@
     }
   }
 
-  window.load(LOAD_URL, function (data) {
+  window.load(PIN_LOAD_URL, function (data) {
     var similarApartments = JSON.parse(data);
     var filteredApartments = similarApartments.slice(0, 3);
 
-    filteredApartments.foreach(renderPins());
+    renderPins(filteredApartments);
   });
 
   pinMap.addEventListener('click', pinMapHadler);
