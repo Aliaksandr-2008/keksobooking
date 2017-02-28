@@ -18,10 +18,9 @@
     HEIGHT: 75
   };
 
-  var IMAGE_LOAD_TIMEOUT = 10000;
-
   var pinMap = document.querySelector('.tokyo__pin-map');
   var activePin = null;
+  var mainPin = pinMap.querySelector('.pin__main');
   var dialogCloseBtn = document.querySelector('.dialog__close');
 
   var filteredApartments = null;
@@ -44,7 +43,7 @@
 
     imgLoadTimeout = setTimeout(function () {
       img.src = '';
-    }, IMAGE_LOAD_TIMEOUT);
+    }, 10000);
 
     pinElement.style.left = parseInt(item.location.x, 10) - PIN_SIZE.WIDTH / 2 + 'px';
     pinElement.style.top = parseInt(item.location.y, 10) - PIN_SIZE.HEIGHT + 'px';
@@ -73,6 +72,7 @@
       target.classList.add('pin--active');
       target.setAttribute('aria-pressed', 'true');
     }
+    activePin = pinMap.querySelector('.pin--active');
   };
 
   // Деактивирует активный элемент
@@ -150,12 +150,15 @@
       deactivatePin();
 
       while (target !== pinMap) {
-        if (target.classList.contains('pin') && target !== activePin) {
+        if (target.classList.contains('pin') && target !== activePin && target !== mainPin) {
           activatePin(target);
-          activePin = pinMap.querySelector('.pin--active');
-          window.showCard(filteredApartments[parseInt(target.getAttribute('data-index'), 10)].offer);
+          var offerData = filteredApartments[parseInt(target.getAttribute('data-index'), 10)]
+          window.showCard(offerData);
           setDialogHandlers(true);
-        } else if (target === activePin) {
+        } else if (target === activePin && target !== mainPin) {
+          dialogClose();
+        } else if (target === mainPin) {
+          activatePin(target);
           dialogClose();
         }
         target = target.parentNode;
