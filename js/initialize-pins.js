@@ -24,6 +24,8 @@
   var activePin = null;
   var dialogCloseBtn = document.querySelector('.dialog__close');
 
+  var filteredApartments = null;
+
   var templateElement = document.getElementById('pin-template');
   var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
 
@@ -93,7 +95,7 @@
 
   // Закрывает окно со всеми последствиями
   var dialogClose = function () {
-    window.showCard(function () {
+    window.showCard(false, function () {
       activePin.focus(); /* Устанавливает фокус на активную метку на карте при закрытии окна диалога */
     });
     setDialogHandlers();
@@ -151,7 +153,7 @@
         if (target.classList.contains('pin') && target !== activePin) {
           activatePin(target);
           activePin = pinMap.querySelector('.pin--active');
-          window.showCard();
+          window.showCard(filteredApartments[parseInt(target.getAttribute('data-index'), 10)].offer);
           setDialogHandlers(true);
         } else if (target === activePin) {
           dialogClose();
@@ -170,7 +172,7 @@
 
   window.load(PIN_LOAD_URL, function (data) {
     var similarApartments = JSON.parse(data);
-    var filteredApartments = similarApartments.slice(0, 3);
+    filteredApartments = similarApartments.slice(0, 3);
 
     renderPins(filteredApartments);
   });
