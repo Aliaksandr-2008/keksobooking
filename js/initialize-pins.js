@@ -25,7 +25,7 @@
 
   var similarApartments = null;
   var filteredApartments = null;
-  var filtersForm = document.querySelector('.tokyo__filters');
+  var filters = document.querySelector('.tokyo__filters');
 
   var templateElement = document.getElementById('pin-template');
   var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
@@ -190,7 +190,7 @@
     renderPins(filteredApartments);
   });
 
-  filtersForm.addEventListener('change', filtersFormHandler);
+  filters.addEventListener('change', filtersFormHandler);
   pinMap.addEventListener('click', pinMapHadler);
   pinMap.addEventListener('keydown', pinMapHadler);
 })();
