@@ -25,7 +25,7 @@
 
   var similarApartments = null;
   var filteredApartments = null;
-  var filtersForm = document.querySelector('.tokyo__filters')
+  var filtersForm = document.querySelector('.tokyo__filters');
 
   var templateElement = document.getElementById('pin-template');
   var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
@@ -76,7 +76,7 @@
     for (var i = 0; i < pins.length; i++) {
       if (!pins[i].classList.contains('pin__main')) {
         pins[i].remove();
-      };
+      }
     }
   };
 
