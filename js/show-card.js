@@ -4,7 +4,7 @@ window.showCard = (function () {
   var dialog = document.querySelector('.dialog');
 
   /**
-   * @param {obj} offer
+   * @param {obj} offerData
    * @param {?Function} callback
    */
   return function (offerData, callback) {
@@ -28,12 +28,12 @@ window.showCard = (function () {
 
     var rooms = function (arg) {
       var num = arg.toString();
-      var lastNum = parseInt(num[num.length - 1], 10)
+      var lastNum = parseInt(num[num.length - 1], 10);
       if (lastNum === 1) {
         return num + ' комната';
       } else if (lastNum >= 2 && lastNum <= 4) {
         return num + ' комнаты';
-      } else if (parseInt(arg) !== 0) {
+      } else if (parseInt(arg, 10) !== 0) {
         return num + ' комнат';
       } else {
         return 'нет комнат для гостей';
@@ -42,15 +42,15 @@ window.showCard = (function () {
 
     var guests = function (arg) {
       var num = arg.toString();
-      var lastNum = parseInt(num[num.length - 1], 10)
+      var lastNum = parseInt(num[num.length - 1], 10);
       if (lastNum === 1) {
         return ' для ' + num + ' гостя';
-      } else  if (parseInt(arg) !== 0) {
+      } else if (parseInt(arg, 10) !== 0) {
         return ' для ' + num + ' гостей';
       } else {
         return '';
       }
-    };;
+    };
 
     if (offerData) {
       dialog.classList.toggle('dialog--active', true);
@@ -87,6 +87,6 @@ window.showCard = (function () {
 
     if (callback) {
       callback();
-    };
+    }
   };
 })();

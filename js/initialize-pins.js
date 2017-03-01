@@ -152,7 +152,7 @@
       while (target !== pinMap) {
         if (target.classList.contains('pin') && target !== activePin && target !== mainPin) {
           activatePin(target);
-          var offerData = filteredApartments[parseInt(target.getAttribute('data-index'), 10)]
+          var offerData = filteredApartments[parseInt(target.getAttribute('data-index'), 10)];
           window.showCard(offerData);
           setDialogHandlers(true);
         } else if (target === activePin && target !== mainPin) {
