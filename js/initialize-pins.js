@@ -23,7 +23,9 @@
   var mainPin = pinMap.querySelector('.pin__main');
   var dialogCloseBtn = document.querySelector('.dialog__close');
 
+  var similarApartments = null;
   var filteredApartments = null;
+  var filtersForm = document.querySelector('.tokyo__filters')
 
   var templateElement = document.getElementById('pin-template');
   var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
@@ -58,9 +60,24 @@
   };
 
   var renderPins = function (obj) {
+    clearPinMap();
     obj.forEach(function (item, index) {
       pinMap.appendChild(new Pin(item, index).element);
     });
+  };
+
+  var filtersFormHandler = function () {
+    filteredApartments = window.filtersForm(similarApartments);
+    renderPins(filteredApartments);
+  };
+
+  var clearPinMap = function () {
+    var pins = pinMap.querySelectorAll('.pin');
+    for (var i = 0; i < pins.length; i++) {
+      if (!pins[i].classList.contains('pin__main')) {
+        pins[i].remove();
+      };
+    }
   };
 
   // Активирует элемент на карте, по-которому был клик или нажатие клавиши "Enter"
@@ -166,20 +183,14 @@
     }
   };
 
-  var pins = document.querySelectorAll('.pin');
-  for (var i = 0; i < pins.length; i++) {
-    if (!pins[i].classList.contains('pin__main')) {
-      pins[i].remove();
-    }
-  }
-
   window.load(PIN_LOAD_URL, function (data) {
-    var similarApartments = JSON.parse(data);
+    similarApartments = JSON.parse(data);
     filteredApartments = similarApartments.slice(0, 3);
 
     renderPins(filteredApartments);
   });
 
+  filtersForm.addEventListener('change', filtersFormHandler);
   pinMap.addEventListener('click', pinMapHadler);
   pinMap.addEventListener('keydown', pinMapHadler);
 })();
